@@ -51,7 +51,7 @@ let create_views =
     create_view_current_salaries
 
 let getEmpListByName =
-    `select T.emp_no, T.first_name, T.last_name,
+    `select T.emp_no, T.birth_date,T.first_name, T.last_name,T.gender,T.hire_date,
     case when year(c.to_date)<9999 then 1 else 0 end as 'left',
     case when s1.salary>s2.salary then 1 else 0 end as 'more' 
     from (
