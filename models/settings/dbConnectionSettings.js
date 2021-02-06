@@ -1,0 +1,15 @@
+module.exports = {
+    host: process.env.CLEARDB_HOST || 'localhost',
+    port: 3306,
+    user: process.env.CLEARDB_USER || 'root2',
+    password: process.env.CLEARDB_PASSWORD || '1234',
+    database: process.env.CLEARDB_DATABASE || 'employees',
+    table_employees: 'employees',
+    table_salaries: 'salaries',
+    table_dept_emp: 'dept_emp',
+    table_departments: 'departments',
+    table_dept_manager: 'dept_manager',
+    table_titles: 'titles',
+    queryLimit: 100,
+    connectionLimit: 100,
+}
