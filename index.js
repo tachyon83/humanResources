@@ -3,11 +3,13 @@ const express = require('express');
 // const session = require('express-session');
 // const passport = require('passport');
 // const passportConfig = require('./config/passportConfig');
+const morgan = require('morgan')
 const cors = require('cors');
 const webSettings = require('./config/webSettings')
 const app = express();
 require('dotenv').config()
 
+app.use(morgan('short'))
 app.use(express.json())
 app.set('port', process.env.PORT || 3008);
 app.use(webSettings.sessionRedisMiddleware)
