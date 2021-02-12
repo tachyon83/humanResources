@@ -13,6 +13,7 @@ module.exports = {
     table_dept_manager: 'dept_manager',
     view_current_dept_manager: 'current_dept_manager',
     table_titles: 'titles',
+    view_current_titles: 'current_titles',
     index_on_employees: 'index_on_employees',
     // index_on_current_dept_emp: 'index_on_current_dept_emp',
     index_on_current_dept_manager: 'index_on_current_dept_manager',

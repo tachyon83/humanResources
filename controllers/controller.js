@@ -4,6 +4,11 @@ const sqls = require('../models/settings/sqlDispenser')
 const resHandler = require('../utils/responseHandler')
 const errHandler = require('../utils/errorHandler')
 
+// controllers could be separated...
+// in this project, they are all gathered together
+// not sure which way is better...
+// guessing that if there is no cost requiring modules, better separate controllers.
+
 module.exports = (keyword) => {
     switch (keyword) {
         case 'emp':
@@ -25,8 +30,28 @@ module.exports = (keyword) => {
                 },
 
             }
+
         case 'dept':
-            return {}
+            return {
+                getDeptNames: (req, res) => {
+                    console.log('[deptController]: Getting Dept Name List...')
+                    console.log()
+                    dao.sqlHandler(sqls.getDeptNames)
+                        .then(list => res.status(200).json(resHandler(list)))
+                        .catch(err => res.status(500).json(errHandler(err)))
+                }
+            }
+
+        case 'title':
+            return {
+                getTitleNames: (req, res) => {
+                    console.log('[titleController]: Getting Title Name List...')
+                    console.log()
+                    dao.sqlHandler(sqls.getTitleNames)
+                        .then(list => res.status(200).json(resHandler(list)))
+                        .catch(err => res.status(500).json(errHandler(err)))
+                }
+            }
         default:
         // 
     }

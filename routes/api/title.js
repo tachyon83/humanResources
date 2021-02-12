@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const deptController = require('../../controllers/controller')('dept')
+const titleController = require('../../controllers/controller')('title')
 // const httpAuth = require('../utils/httpAuth')
 
-router.get('/', deptController.getDeptNames)
+router.get('/', titleController.getTitleNames)
 
 
 module.exports = router

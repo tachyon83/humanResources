@@ -1,3 +1,4 @@
+require('dotenv').config()
 const http = require('http');
 const express = require('express');
 // const session = require('express-session');
@@ -7,7 +8,7 @@ const morgan = require('morgan')
 const cors = require('cors');
 const webSettings = require('./config/webSettings')
 const app = express();
-require('dotenv').config()
+const errHandler = require('./utils/errorHandler')
 
 app.use(morgan('short'))
 app.use(express.json())
@@ -24,6 +25,8 @@ const server = http.createServer(app);
 
 app.use(require('./utils/timeStamp'))
 app.use('/api/emp', require('./routes/api/emp'));
+app.use('/api/dept', require('./routes/api/dept'))
+app.use('/api/title', require('./routes/api/title'))
 
 
 // 404
@@ -38,7 +41,7 @@ app.use(function (err, req, res, next) {
     console.log('check cors, path, method...etc')
     console.log(err)
     console.log()
-    res.json(errorHandler(err))
+    res.json(errHandler(err))
 });
 
 server.listen(app.get('port'), () => {

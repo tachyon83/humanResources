@@ -45,10 +45,21 @@ let create_view_current_dept_manager =
         select * from cdm where rn=1
     );`
 
+let create_view_current_titles =
+    `create table if not exists ${dbSetting.view_current_titles} as(
+        with ct as (
+            select t.*, row_number() over 
+            (partition by t.emp_no order by t.to_date desc) as rn 
+            from ${dbSetting.table_titles} t
+        ) 
+        select * from ct where rn=1
+    );`
+
 // these views are changed into tables in order to apply index!
 let create_views =
     create_view_current_dept_manager +
-    create_view_current_salaries
+    create_view_current_salaries +
+    create_view_current_titles
 
 let getEmpListByName =
     `select T.emp_no, T.birth_date,T.first_name, T.last_name,T.gender,T.hire_date,
@@ -64,10 +75,18 @@ let getEmpListByName =
     left join ${dbSetting.view_current_salaries} s2 on m.emp_no=s2.emp_no 
     limit ?,${dbSetting.queryLimit};`
 
+let getDeptNames =
+    `select dept_name from ${dbSetting.table_departments};`
+
+let getTitleNames =
+    `select distinct(title) from ${dbSetting.table_titles};`
+
 module.exports = {
     // create_view_current_salaries,
     // create_view_current_dept_manager,
     create_views,
     create_indexes,
     getEmpListByName,
+    getDeptNames,
+    getTitleNames,
 }
