@@ -14,9 +14,25 @@ module.exports = (keyword) => {
         case 'emp':
             return {
                 getEmpListByName: (req, res) => {
-                    console.log('[empController]: Getting Employees List...')
+                    console.log('[empController]: Getting Employees List By Name...')
                     console.log()
                     dao.sqlHandler(sqls.getEmpListByName, [req.params.name, req.params.name, (req.params.page - 1) * dbSetting.queryLimit])
+                        .then(list => res.status(200).json(resHandler(list)))
+                        .catch(err => res.status(500).json(errHandler(err)))
+                },
+
+                getEmpListByDept: (req, res) => {
+                    console.log('[empController]: Getting Employees List By Dept...')
+                    console.log()
+                    dao.sqlHandler(sqls.getEmpListByDept, [req.params.dept, (req.params.page - 1) * dbSetting.queryLimit])
+                        .then(list => res.status(200).json(resHandler(list)))
+                        .catch(err => res.status(500).json(errHandler(err)))
+                },
+
+                getEmpListByTitle: (req, res) => {
+                    console.log('[empController]: Getting Employees List By Title...')
+                    console.log()
+                    dao.sqlHandler(sqls.getEmpListByTitle, [req.params.title, (req.params.page - 1) * dbSetting.queryLimit])
                         .then(list => res.status(200).json(resHandler(list)))
                         .catch(err => res.status(500).json(errHandler(err)))
                 },

@@ -39,8 +39,9 @@ module.exports = (function () {
             if (!dbPool) {
                 console.log('this instance creator must be called only once')
                 dbPool = await initiate();
+                return dbPool
             }
-            return dbPool;
+            else return dbPool;
         }
     }
 })();

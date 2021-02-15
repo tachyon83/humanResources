@@ -1,6 +1,6 @@
 const session = require('express-session');
-const RedisStore = require("connect-redis")(session);
-const redisClient = require('../config/redisClient');
+// const RedisStore = require("connect-redis")(session);
+// const redisClient = require('../config/redisClient');
 
 module.exports = {
     sessionRedisMiddleware: session({
@@ -9,14 +9,14 @@ module.exports = {
         secret: 'secret secretary',
         resave: false,
         saveUninitialized: false,
-        store: new RedisStore({
-            client: redisClient,
-            ttl: 60 * 60,
-            // host: 'localhost',
-            // port: 6379,
-            // prefix: 'session',
-            // db: 0,
-        }),
+        // store: new RedisStore({
+        //     client: redisClient,
+        //     ttl: 60 * 60,
+        //     // host: 'localhost',
+        //     // port: 6379,
+        //     // prefix: 'session',
+        //     // db: 0,
+        // }),
         cookie: (process.env.NODE_ENV === 'production') ? {
             httpOnly: true,
             // path: corsSettings.origin,

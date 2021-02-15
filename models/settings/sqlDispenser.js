@@ -75,6 +75,34 @@ let getEmpListByName =
     left join ${dbSetting.view_current_salaries} s2 on m.emp_no=s2.emp_no 
     limit ?,${dbSetting.queryLimit};`
 
+let getEmpListByDept =
+    `select T.emp_no, T.birth_date,T.first_name, T.last_name,T.gender,T.hire_date,
+    case when year(T.to_date)<9999 then 1 else 0 end as 'left',
+    case when s1.salary>s2.salary then 1 else 0 end as 'more' 
+    from (select e.*,de.dept_no,de.to_date from ${dbSetting.table_current_dept_emp} de 
+    left join ${dbSetting.table_employees} e on de.emp_no=e.emp_no 
+    where de.dept_no=(
+        select dept_no from ${dbSetting.table_departments} 
+        where dept_name=?)
+    ) T 
+    left join ${dbSetting.view_current_dept_manager} m on T.dept_no = m.dept_no 
+    left join ${dbSetting.view_current_salaries} s1 on s1.emp_no = T.emp_no 
+    left join ${dbSetting.view_current_salaries} s2 on m.emp_no=s2.emp_no 
+    limit ?,${dbSetting.queryLimit};`
+
+let getEmpListByTitle =
+    `select T.emp_no, T.birth_date,T.first_name, T.last_name,T.gender,T.hire_date,
+    case when year(T.to_date)<9999 then 1 else 0 end as 'left',
+    case when s1.salary>s2.salary then 1 else 0 end as 'more' 
+    from (select e.*,ct.to_date from ${dbSetting.view_current_titles} ct 
+    left join ${dbSetting.table_employees} e on ct.emp_no=e.emp_no 
+    where ct.title=?) T 
+    left join ${dbSetting.table_current_dept_emp} de on de.emp_no=T.emp_no 
+    left join ${dbSetting.view_current_dept_manager} m on de.dept_no = m.dept_no 
+    left join ${dbSetting.view_current_salaries} s1 on s1.emp_no = T.emp_no 
+    left join ${dbSetting.view_current_salaries} s2 on m.emp_no=s2.emp_no 
+    limit ?,${dbSetting.queryLimit};`
+
 let getDeptNames =
     `select dept_name from ${dbSetting.table_departments};`
 
@@ -82,11 +110,11 @@ let getTitleNames =
     `select distinct(title) from ${dbSetting.table_titles};`
 
 module.exports = {
-    // create_view_current_salaries,
-    // create_view_current_dept_manager,
     create_views,
     create_indexes,
     getEmpListByName,
+    getEmpListByDept,
+    getEmpListByTitle,
     getDeptNames,
     getTitleNames,
 }
