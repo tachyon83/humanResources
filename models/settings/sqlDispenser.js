@@ -62,7 +62,9 @@ let create_views =
     create_view_current_titles
 
 let getEmpListByName =
-    `select T.emp_no, T.birth_date,T.first_name, T.last_name,T.gender,T.hire_date,
+    `select 
+    T.emp_no, T.birth_date,T.first_name, T.last_name,T.gender,T.hire_date,
+    d.dept_name,ct.title,
     case when year(c.to_date)<9999 then 1 else 0 end as 'left',
     case when s1.salary>s2.salary then 1 else 0 end as 'more' 
     from (
@@ -70,13 +72,17 @@ let getEmpListByName =
         last_name like concat('%',?,'%')
     ) T 
     left join ${dbSetting.table_current_dept_emp} c on T.emp_no = c.emp_no  
+    left join ${dbSetting.table_departments} d on c.dept_no=d.dept_no 
     left join ${dbSetting.view_current_dept_manager} m on c.dept_no = m.dept_no 
+    left join ${dbSetting.view_current_titles} ct on ct.emp_no=T.emp_no 
     left join ${dbSetting.view_current_salaries} s1 on s1.emp_no = T.emp_no 
     left join ${dbSetting.view_current_salaries} s2 on m.emp_no=s2.emp_no 
     limit ?,${dbSetting.queryLimit};`
 
 let getEmpListByDept =
-    `select T.emp_no, T.birth_date,T.first_name, T.last_name,T.gender,T.hire_date,
+    `select 
+    T.emp_no, T.birth_date,T.first_name, T.last_name,T.gender,T.hire_date,
+    d.dept_name,ct.title,
     case when year(T.to_date)<9999 then 1 else 0 end as 'left',
     case when s1.salary>s2.salary then 1 else 0 end as 'more' 
     from (select e.*,de.dept_no,de.to_date from ${dbSetting.table_current_dept_emp} de 
@@ -85,29 +91,73 @@ let getEmpListByDept =
         select dept_no from ${dbSetting.table_departments} 
         where dept_name=?)
     ) T 
+    left join ${dbSetting.table_departments} d on T.dept_no=d.dept_no 
+    left join ${dbSetting.view_current_titles} ct on ct.emp_no=T.emp_no 
     left join ${dbSetting.view_current_dept_manager} m on T.dept_no = m.dept_no 
     left join ${dbSetting.view_current_salaries} s1 on s1.emp_no = T.emp_no 
     left join ${dbSetting.view_current_salaries} s2 on m.emp_no=s2.emp_no 
     limit ?,${dbSetting.queryLimit};`
 
 let getEmpListByTitle =
-    `select T.emp_no, T.birth_date,T.first_name, T.last_name,T.gender,T.hire_date,
+    `select 
+    T.emp_no, T.birth_date,T.first_name, T.last_name,T.gender,T.hire_date,
+    d.dept_name,T.title,
     case when year(T.to_date)<9999 then 1 else 0 end as 'left',
     case when s1.salary>s2.salary then 1 else 0 end as 'more' 
-    from (select e.*,ct.to_date from ${dbSetting.view_current_titles} ct 
+    from (select e.*,ct.title,ct.to_date from ${dbSetting.view_current_titles} ct 
     left join ${dbSetting.table_employees} e on ct.emp_no=e.emp_no 
     where ct.title=?) T 
     left join ${dbSetting.table_current_dept_emp} de on de.emp_no=T.emp_no 
+    left join ${dbSetting.table_departments} d on de.dept_no=d.dept_no 
     left join ${dbSetting.view_current_dept_manager} m on de.dept_no = m.dept_no 
     left join ${dbSetting.view_current_salaries} s1 on s1.emp_no = T.emp_no 
     left join ${dbSetting.view_current_salaries} s2 on m.emp_no=s2.emp_no 
     limit ?,${dbSetting.queryLimit};`
+
+let getEmpThreeRankings =
+    `set @r=0;
+    select T.ranking 
+    from (
+        select @r:=@r+1 as ranking, emp_no 
+        from ${dbSetting.view_current_salaries} where to_date='9999-01-01' 
+        order by salary desc) T 
+    where T.emp_no=?;
+
+    set @r=0;
+    select T.ranking 
+    from (
+        select @r:=@r+1 as ranking,ed.emp_no
+        from (select * from ${dbSetting.table_current_dept_emp} 
+            where dept_no=(
+                select dept_no 
+                from ${dbSetting.table_departments} 
+                where dept_name=?
+                ) and to_date='9999-01-01'
+            ) ed 
+        left join ${dbSetting.view_current_salaries} s 
+        on ed.emp_no=s.emp_no 
+    order by salary desc) T 
+    where T.emp_no=?;
+
+    set @r=0;
+    select T.ranking 
+    from (
+        select @r:=@r+1 as ranking,ct.emp_no 
+        from (select * from ${dbSetting.view_current_titles}
+            where title=? and to_date='9999-01-01') ct 
+        left join ${dbSetting.view_current_salaries} s 
+        on ct.emp_no=s.emp_no 
+    order by salary desc) T 
+    where T.emp_no=?;`
 
 let getDeptNames =
     `select dept_name from ${dbSetting.table_departments};`
 
 let getTitleNames =
     `select distinct(title) from ${dbSetting.table_titles};`
+
+let userFindById =
+    `select * from ${dbSetting.table_user} where id=?;`
 
 module.exports = {
     create_views,
@@ -117,4 +167,6 @@ module.exports = {
     getEmpListByTitle,
     getDeptNames,
     getTitleNames,
+    getEmpThreeRankings,
+    userFindById,
 }

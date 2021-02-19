@@ -4,6 +4,8 @@ module.exports = {
     user: process.env.CLEARDB_USER || 'root2',
     password: process.env.CLEARDB_PASSWORD || '1234',
     database: process.env.CLEARDB_DATABASE || 'employees',
+
+    table_user: 'user',
     table_employees: 'employees',
     table_salaries: 'salaries',
     view_current_salaries: 'current_salaries',

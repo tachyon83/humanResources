@@ -41,10 +41,16 @@ module.exports = (keyword) => {
 
                 },
 
-                getEmpRanksByEmpNo: (req, res) => {
-
+                getEmpThreeRankings: (req, res) => {
+                    console.log(`[empController]: Getting an Employee's three rankings...`)
+                    console.log()
+                    dao.sqlHandler(sqls.getEmpThreeRankings, [req.body.emp_no, req.body.dept_name, req.body.emp_no, req.body.title, req.body.emp_no])
+                        .then(result => {
+                            result = [result[1][0].ranking, result[3][0].ranking, result[5][0].ranking]
+                            res.status(200).json(resHandler(result))
+                        })
+                        .catch(err => res.status(500).json(errHandler(err)))
                 },
-
             }
 
         case 'dept':
