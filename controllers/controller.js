@@ -3,6 +3,7 @@ const dbSetting = require('../models/settings/dbConnectionSettings')
 const sqls = require('../models/settings/sqlDispenser')
 const resHandler = require('../utils/responseHandler')
 const errHandler = require('../utils/errorHandler')
+const qs = require('querystring')
 
 // controllers could be separated...
 // in this project, they are all gathered together
@@ -16,6 +17,10 @@ module.exports = (keyword) => {
                 getEmpListByName: (req, res) => {
                     console.log('[empController]: Getting Employees List By Name...')
                     console.log()
+                    req.params.name = qs.unescape(req.params.name)
+                    // req.params.name2 = qs.escape(req.params.name)
+                    console.log(req.params.name)
+                    // console.log(req.params.name2)
                     dao.sqlHandler(sqls.getEmpListByName, [req.params.name, req.params.name, (req.params.page - 1) * dbSetting.queryLimit])
                         .then(list => res.status(200).json(resHandler(list)))
                         .catch(err => res.status(500).json(errHandler(err)))
@@ -46,7 +51,11 @@ module.exports = (keyword) => {
                     console.log()
                     dao.sqlHandler(sqls.getEmpThreeRankings, [req.body.emp_no, req.body.dept_name, req.body.emp_no, req.body.title, req.body.emp_no])
                         .then(result => {
-                            result = [result[1][0].ranking, result[3][0].ranking, result[5][0].ranking]
+                            result = {
+                                entire: result[1][0].ranking,
+                                dept: result[3][0].ranking,
+                                title: result[5][0].ranking
+                            }
                             res.status(200).json(resHandler(result))
                         })
                         .catch(err => res.status(500).json(errHandler(err)))

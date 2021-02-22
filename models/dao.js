@@ -8,6 +8,7 @@ class Dao {
 
     sqlHandler = (sql, q, fn) => {
         if (q) sql = mysql.format(sql, q)
+        // console.log(sql)
         return new Promise(async (resolve, reject) => {
             try {
                 const dbPool = await db.getPool()
@@ -20,9 +21,10 @@ class Dao {
                         conn.release();
                         if (err) return reject(err)
 
-                        // console.log('db process result', rows)
                         console.log('[DAO]: A Query Processed...')
                         console.log()
+                        // console.log('db process result', rows)
+                        // console.log()
                         resolve(rows)
                     })
                 })
