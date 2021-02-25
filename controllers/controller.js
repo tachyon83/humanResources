@@ -43,7 +43,11 @@ module.exports = (keyword) => {
                 },
 
                 getEmpHistoryByEmpNo: (req, res) => {
-
+                    console.log(`[empController]: Getting Employee's History...`)
+                    console.log()
+                    dao.sqlHandler(sqls.getEmpHistoryByEmpNo, req.params.emp_no)
+                        .then(list => res.status(200).json(resHandler(list)))
+                        .catch(err => res.status(500).json(errHandler(err)))
                 },
 
                 getEmpThreeRankings: (req, res) => {

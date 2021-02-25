@@ -6,7 +6,7 @@ const empController = require('../../controllers/controller')('emp')
 router.get('/:name/:page', empController.getEmpListByName)
 router.get('/dept/:dept/:page', empController.getEmpListByDept)
 router.get('/title/:title/:page', empController.getEmpListByTitle)
-router.get('/history', empController.getEmpHistoryByEmpNo)
+router.get('/history/:emp_no', empController.getEmpHistoryByEmpNo)
 router.post('/rank', empController.getEmpThreeRankings)
 
 module.exports = router

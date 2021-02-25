@@ -114,6 +114,9 @@ let getEmpListByTitle =
     left join ${dbSetting.view_current_salaries} s2 on m.emp_no=s2.emp_no 
     limit ?,${dbSetting.queryLimit};`
 
+let getEmpHistoryByEmpNo =
+    `select * from ${dbSetting.table_dept_emp} where emp_no=?;`
+
 let getEmpThreeRankings =
     `set @r=0;
     select T.ranking 
@@ -167,6 +170,7 @@ module.exports = {
     getEmpListByTitle,
     getDeptNames,
     getTitleNames,
+    getEmpHistoryByEmpNo,
     getEmpThreeRankings,
     userFindById,
 }
