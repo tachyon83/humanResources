@@ -65,7 +65,7 @@ let getEmpListByName =
     `select 
     T.emp_no, T.birth_date,T.first_name, T.last_name,T.gender,T.hire_date,
     d.dept_name,ct.title,
-    case when year(c.to_date)<9999 then 1 else 0 end as 'left',
+    case when year(c.to_date)<9998 then 1 else 0 end as 'left',
     case when s1.salary>s2.salary then 1 else 0 end as 'more' 
     from (
         select * from ${dbSetting.table_employees} where first_name like concat('%',?,'%') or 
@@ -83,7 +83,7 @@ let getEmpListByDept =
     `select 
     T.emp_no, T.birth_date,T.first_name, T.last_name,T.gender,T.hire_date,
     d.dept_name,ct.title,
-    case when year(T.to_date)<9999 then 1 else 0 end as 'left',
+    case when year(T.to_date)<9998 then 1 else 0 end as 'left',
     case when s1.salary>s2.salary then 1 else 0 end as 'more' 
     from (select e.*,de.dept_no,de.to_date from ${dbSetting.table_current_dept_emp} de 
     left join ${dbSetting.table_employees} e on de.emp_no=e.emp_no 
@@ -102,7 +102,7 @@ let getEmpListByTitle =
     `select 
     T.emp_no, T.birth_date,T.first_name, T.last_name,T.gender,T.hire_date,
     d.dept_name,T.title,
-    case when year(T.to_date)<9999 then 1 else 0 end as 'left',
+    case when year(T.to_date)<9998 then 1 else 0 end as 'left',
     case when s1.salary>s2.salary then 1 else 0 end as 'more' 
     from (select e.*,ct.title,ct.to_date from ${dbSetting.view_current_titles} ct 
     left join ${dbSetting.table_employees} e on ct.emp_no=e.emp_no 
@@ -115,7 +115,10 @@ let getEmpListByTitle =
     limit ?,${dbSetting.queryLimit};`
 
 let getEmpHistoryByEmpNo =
-    `select * from ${dbSetting.table_dept_emp} where emp_no=?;`
+    `select de.emp_no, d.dept_name,de.from_date,
+    case when year(de.to_date)<9998 then de.to_date else 'present' end as 'to_date' 
+    from (select * from ${dbSetting.table_dept_emp} where emp_no=?) de 
+    left join ${dbSetting.table_departments} d on de.dept_no=d.dept_no;`
 
 let getEmpThreeRankings =
     `set @r=0;

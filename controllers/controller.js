@@ -19,7 +19,7 @@ module.exports = (keyword) => {
                     console.log()
                     req.params.name = qs.unescape(req.params.name)
                     // req.params.name2 = qs.escape(req.params.name)
-                    console.log(req.params.name)
+                    // console.log(req.params.name)
                     // console.log(req.params.name2)
                     dao.sqlHandler(sqls.getEmpListByName, [req.params.name, req.params.name, (req.params.page - 1) * dbSetting.queryLimit])
                         .then(list => res.status(200).json(resHandler(list)))
@@ -29,6 +29,7 @@ module.exports = (keyword) => {
                 getEmpListByDept: (req, res) => {
                     console.log('[empController]: Getting Employees List By Dept...')
                     console.log()
+                    req.params.dept = qs.unescape(req.params.dept)
                     dao.sqlHandler(sqls.getEmpListByDept, [req.params.dept, (req.params.page - 1) * dbSetting.queryLimit])
                         .then(list => res.status(200).json(resHandler(list)))
                         .catch(err => res.status(500).json(errHandler(err)))
@@ -37,6 +38,7 @@ module.exports = (keyword) => {
                 getEmpListByTitle: (req, res) => {
                     console.log('[empController]: Getting Employees List By Title...')
                     console.log()
+                    req.params.title = qs.unescape(req.params.title)
                     dao.sqlHandler(sqls.getEmpListByTitle, [req.params.title, (req.params.page - 1) * dbSetting.queryLimit])
                         .then(list => res.status(200).json(resHandler(list)))
                         .catch(err => res.status(500).json(errHandler(err)))
@@ -53,7 +55,10 @@ module.exports = (keyword) => {
                 getEmpThreeRankings: (req, res) => {
                     console.log(`[empController]: Getting an Employee's three rankings...`)
                     console.log()
-                    dao.sqlHandler(sqls.getEmpThreeRankings, [req.body.emp_no, req.body.dept_name, req.body.emp_no, req.body.title, req.body.emp_no])
+                    req.params.dept_name = qs.unescape(req.params.dept_name)
+                    req.params.title = qs.unescape(req.params.title)
+                    // console.log(req.params.title)
+                    dao.sqlHandler(sqls.getEmpThreeRankings, [req.params.emp_no, req.params.dept_name, req.params.emp_no, req.params.title, req.params.emp_no])
                         .then(result => {
                             result = {
                                 entire: result[1][0].ranking,
