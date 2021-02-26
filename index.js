@@ -27,6 +27,7 @@ app.use(require('./utils/timeStamp'))
 app.use('/api/emp', require('./routes/api/emp'));
 app.use('/api/dept', require('./routes/api/dept'))
 app.use('/api/title', require('./routes/api/title'))
+app.use('/api/stat', require('./routes/api/stat'))
 
 
 // 404

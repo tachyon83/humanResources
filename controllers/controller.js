@@ -92,6 +92,42 @@ module.exports = (keyword) => {
                         .catch(err => res.status(500).json(errHandler(err)))
                 }
             }
+
+        case 'distribution':
+            return {
+                getDistributionOverDeptWhenSalaryIsAndAbove: (req, res) => {
+                    console.log(`[distributionController]: Getting Distribution Over Dept When Salary Is And Above ${req.params.salary}...`)
+                    console.log()
+                    dao.sqlHandler(sqls.getDistributionOverDeptWhenSalaryIsAndAbove, req.params.salary)
+                        .then(list => res.status(200).json(resHandler(list)))
+                        .catch(err => res.status(500).json(errHandler(err)))
+                },
+
+                getDistributionOverDeptWhenSalaryIsAndBelow: (req, res) => {
+                    console.log(`[distributionController]: Getting Distribution Over Dept When Salary Is And Below ${req.params.salary}...`)
+                    console.log()
+                    dao.sqlHandler(sqls.getDistributionOverDeptWhenSalaryIsAndBelow, req.params.salary)
+                        .then(list => res.status(200).json(resHandler(list)))
+                        .catch(err => res.status(500).json(errHandler(err)))
+                },
+
+                getDistributionOverDeptOverSalaryRange: (req, res) => {
+                    console.log(`[distributionController]: Getting Distribution Over Dept And Over Salary Range...`)
+                    console.log()
+                    dao.sqlHandler(sqls.getDistributionOverDeptOverSalaryRange)
+                        .then(list => res.status(200).json(resHandler(list)))
+                        .catch(err => res.status(500).json(errHandler(err)))
+                },
+
+                getDistributionOverEmpOverSalaryRange: (req, res) => {
+                    console.log(`[distributionController]: Getting Distribution Over Emp And Over Salary Range...`)
+                    console.log()
+                    dao.sqlHandler(sqls.getDistributionOverEmpOverSalaryRange)
+                        .then(list => res.status(200).json(resHandler(list)))
+                        .catch(err => res.status(500).json(errHandler(err)))
+                }
+            }
+
         default:
         // 
     }

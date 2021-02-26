@@ -156,6 +156,65 @@ let getEmpThreeRankings =
     order by salary desc) T 
     where T.emp_no=?;`
 
+let getDistributionOverDeptWhenSalaryIsAndAbove =
+    `select d.dept_name,count(*) as cnt 
+    from ${dbSetting.view_current_salaries} cs 
+    left join ${dbSetting.table_current_dept_emp} cde 
+    on cs.emp_no=cde.emp_no 
+    left join ${dbSetting.table_departments} d 
+    on cde.dept_no=d.dept_no 
+    where salary>=? group by dept_name;`
+
+let getDistributionOverDeptWhenSalaryIsAndBelow =
+    `select d.dept_name,count(*) as cnt 
+    from ${dbSetting.view_current_salaries} cs 
+    left join ${dbSetting.table_current_dept_emp} cde 
+    on cs.emp_no=cde.emp_no 
+    left join ${dbSetting.table_departments} d 
+    on cde.dept_no=d.dept_no 
+    where salary<=? group by dept_name;`
+
+let getDistributionOverDeptOverSalaryRange =
+    `select dept_name,sal, count(sal) as cnt from (
+        select d.dept_name,case 
+        when cs.salary<=40000 then 40000
+        when cs.salary<=50000 then 50000
+        when cs.salary<=60000 then 60000
+        when cs.salary<=70000 then 70000
+        when cs.salary<=80000 then 80000
+        when cs.salary<=90000 then 90000
+        when cs.salary<=100000 then 100000
+        when cs.salary<=110000 then 110000
+        when cs.salary<=120000 then 120000
+        when cs.salary<=130000 then 130000
+        when cs.salary<=140000 then 140000
+        when cs.salary<=150000 then 150000
+        when cs.salary<=160000 then 160000 else 170000 end as sal
+        from ${dbSetting.table_current_dept_emp} cde 
+        left join ${dbSetting.view_current_salaries} cs 
+        on cde.emp_no=cs.emp_no
+        left join ${dbSetting.table_departments} d 
+        on cde.dept_no=d.dept_no
+    ) T group by dept_name, sal order by dept_name, sal desc;`
+
+let getDistributionOverEmpOverSalaryRange =
+    `select sal, count(sal) as cnt from 
+    (select case 
+    when salary<=40000 then 40000
+    when salary<=50000 then 50000
+    when salary<=60000 then 60000
+    when salary<=70000 then 70000
+    when salary<=80000 then 80000
+    when salary<=90000 then 90000
+    when salary<=100000 then 100000
+    when salary<=110000 then 110000
+    when salary<=120000 then 120000
+    when salary<=130000 then 130000
+    when salary<=140000 then 140000
+    when salary<=150000 then 150000
+    when salary<=160000 then 160000 else 170000 end as sal
+    from ${dbSetting.view_current_salaries}) T group by sal order by sal desc;`
+
 let getDeptNames =
     `select dept_name from ${dbSetting.table_departments};`
 
@@ -171,9 +230,14 @@ module.exports = {
     getEmpListByName,
     getEmpListByDept,
     getEmpListByTitle,
-    getDeptNames,
-    getTitleNames,
     getEmpHistoryByEmpNo,
     getEmpThreeRankings,
+    getDistributionOverDeptWhenSalaryIsAndAbove,
+    getDistributionOverDeptWhenSalaryIsAndBelow,
+    getDistributionOverDeptOverSalaryRange,
+    getDistributionOverEmpOverSalaryRange,
+    getDeptNames,
+    getTitleNames,
     userFindById,
+
 }
