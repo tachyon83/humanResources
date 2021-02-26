@@ -118,9 +118,12 @@ let getEmpHistoryByEmpNo =
     `select de.emp_no, d.dept_name,de.from_date,
     case when year(de.to_date)<9998 then de.to_date else 'present' end as 'to_date' 
     from (select * from ${dbSetting.table_dept_emp} where emp_no=?) de 
-    left join ${dbSetting.table_departments} d on de.dept_no=d.dept_no;`
+    left join ${dbSetting.table_departments} d on de.dept_no=d.dept_no;
+    select emp_no,salary,from_date,
+    case when year(to_date)<9998 then to_date else 'present' end as 'to_date' 
+    from ${dbSetting.table_salaries} where emp_no=?;`
 
-let getEmpThreeRankings =
+let getEmpThreeRankingsBySalary =
     `set @r=0;
     select T.ranking 
     from (
@@ -154,6 +157,40 @@ let getEmpThreeRankings =
         left join ${dbSetting.view_current_salaries} s 
         on ct.emp_no=s.emp_no 
     order by salary desc) T 
+    where T.emp_no=?;`
+
+let getEmpThreeRankingsByPeriod =
+    `set @r=0;
+    select T.ranking 
+    from (
+        select @r:=@r+1 as ranking, emp_no 
+        from ${dbSetting.table_current_dept_emp} where to_date='9999-01-01' 
+        order by from_date asc) T 
+    where T.emp_no=?;
+
+    set @r=0;
+    select T.ranking 
+    from (
+        select @r:=@r+1 as ranking,ed.emp_no
+        from (select * from ${dbSetting.table_current_dept_emp} 
+            where dept_no=(
+                select dept_no 
+                from ${dbSetting.table_departments} 
+                where dept_name=?
+                ) 
+                and to_date='9999-01-01'
+            order by from_date asc) ed 
+    ) T 
+    where T.emp_no=?;
+
+    set @r=0;
+    select T.ranking 
+    from (
+        select @r:=@r+1 as ranking,ct.emp_no 
+        from (select * from ${dbSetting.view_current_titles}
+            where title=? and to_date='9999-01-01' 
+            order by from_date asc) ct     
+    ) T 
     where T.emp_no=?;`
 
 let getDistributionOverDeptWhenSalaryIsAndAbove =
@@ -231,7 +268,8 @@ module.exports = {
     getEmpListByDept,
     getEmpListByTitle,
     getEmpHistoryByEmpNo,
-    getEmpThreeRankings,
+    getEmpThreeRankingsBySalary,
+    getEmpThreeRankingsByPeriod,
     getDistributionOverDeptWhenSalaryIsAndAbove,
     getDistributionOverDeptWhenSalaryIsAndBelow,
     getDistributionOverDeptOverSalaryRange,

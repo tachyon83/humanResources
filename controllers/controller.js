@@ -47,18 +47,44 @@ module.exports = (keyword) => {
                 getEmpHistoryByEmpNo: (req, res) => {
                     console.log(`[empController]: Getting Employee's History...`)
                     console.log()
-                    dao.sqlHandler(sqls.getEmpHistoryByEmpNo, req.params.emp_no)
-                        .then(list => res.status(200).json(resHandler(list)))
+                    dao.sqlHandler(sqls.getEmpHistoryByEmpNo, [req.params.emp_no, req.params.emp_no])
+                        .then(list => {
+                            list = list[0].concat(list[1])
+                            console.log('before', list)
+                            list.sort(function (a, b) {
+                                return (a.from_date > b.from_date) ? 1 : (a.from_date < b.from_date) ? -1 : (a.to_date > b.to_date) ? 1 : (a.to_date < b.to_date) ? -1 : 0
+                            })
+                            console.log('after', list)
+                            res.status(200).json(resHandler(list))
+                        })
                         .catch(err => res.status(500).json(errHandler(err)))
                 },
 
-                getEmpThreeRankings: (req, res) => {
-                    console.log(`[empController]: Getting an Employee's three rankings...`)
+                getEmpThreeRankingsBySalary: (req, res) => {
+                    console.log(`[empController]: Getting an Employee's three rankings By Salary...`)
                     console.log()
                     req.params.dept_name = qs.unescape(req.params.dept_name)
                     req.params.title = qs.unescape(req.params.title)
                     // console.log(req.params.title)
-                    dao.sqlHandler(sqls.getEmpThreeRankings, [req.params.emp_no, req.params.dept_name, req.params.emp_no, req.params.title, req.params.emp_no])
+                    dao.sqlHandler(sqls.getEmpThreeRankingsBySalary, [req.params.emp_no, req.params.dept_name, req.params.emp_no, req.params.title, req.params.emp_no])
+                        .then(result => {
+                            result = {
+                                entire: result[1][0].ranking,
+                                dept: result[3][0].ranking,
+                                title: result[5][0].ranking
+                            }
+                            res.status(200).json(resHandler(result))
+                        })
+                        .catch(err => res.status(500).json(errHandler(err)))
+                },
+
+                getEmpThreeRankingsByPeriod: (req, res) => {
+                    console.log(`[empController]: Getting an Employee's three rankings By Period...`)
+                    console.log()
+                    req.params.dept_name = qs.unescape(req.params.dept_name)
+                    req.params.title = qs.unescape(req.params.title)
+                    // console.log(req.params.title)
+                    dao.sqlHandler(sqls.getEmpThreeRankingsByPeriod, [req.params.emp_no, req.params.dept_name, req.params.emp_no, req.params.title, req.params.emp_no])
                         .then(result => {
                             result = {
                                 entire: result[1][0].ranking,
