@@ -145,7 +145,8 @@ let getEmpThreeRankingsBySalary =
             ) ed 
         left join ${dbSetting.view_current_salaries} s 
         on ed.emp_no=s.emp_no 
-    order by salary desc) T 
+        order by s.salary desc
+    ) T 
     where T.emp_no=?;
 
     set @r=0;
@@ -156,7 +157,8 @@ let getEmpThreeRankingsBySalary =
             where title=? and to_date='9999-01-01') ct 
         left join ${dbSetting.view_current_salaries} s 
         on ct.emp_no=s.emp_no 
-    order by salary desc) T 
+        order by s.salary desc
+    ) T 
     where T.emp_no=?;`
 
 let getEmpThreeRankingsByPeriod =
@@ -279,3 +281,13 @@ module.exports = {
     userFindById,
 
 }
+
+
+// set @r=0;
+// select @r:=@r+1 as ranking,emp_no,salary from (select ed.emp_no,ed.dept_no, s.salary 
+// from (select emp_no,dept_no from current_dept_emp where dept_no=
+//     (select dept_no from departments where dept_name='Sales') 
+//     and to_date='9999-01-01') ed 
+//     left join current_salaries s 
+//     on ed.emp_no=s.emp_no) T
+// order by T.salary desc limit 10;
