@@ -133,67 +133,83 @@ let getEmpThreeRankingsBySalary =
     where T.emp_no=?;
 
     set @r=0;
-    select T.ranking 
+    select ranking 
     from (
-        select @r:=@r+1 as ranking,ed.emp_no
-        from (select * from ${dbSetting.table_current_dept_emp} 
-            where dept_no=(
-                select dept_no 
-                from ${dbSetting.table_departments} 
-                where dept_name=?
-                ) and to_date='9999-01-01'
+        select @r:=@r+1 as ranking, emp_no 
+        from (
+            select ed.emp_no,s.salary 
+            from (
+                select emp_no from ${dbSetting.table_current_dept_emp} 
+                where dept_no=(
+                    select dept_no from ${dbSetting.table_departments} 
+                    where dept_name=?) 
+                and to_date='9999-01-01'
             ) ed 
-        left join ${dbSetting.view_current_salaries} s 
-        on ed.emp_no=s.emp_no 
-        order by s.salary desc
-    ) T 
-    where T.emp_no=?;
+            left join ${dbSetting.view_current_salaries} s 
+            on ed.emp_no=s.emp_no order by s.salary desc
+        ) T
+    ) T2 
+    where emp_no=?;
 
     set @r=0;
-    select T.ranking 
+    select ranking 
     from (
-        select @r:=@r+1 as ranking,ct.emp_no 
-        from (select * from ${dbSetting.view_current_titles}
-            where title=? and to_date='9999-01-01') ct 
-        left join ${dbSetting.view_current_salaries} s 
-        on ct.emp_no=s.emp_no 
-        order by s.salary desc
-    ) T 
-    where T.emp_no=?;`
+        select @r:=@r+1 as ranking, emp_no 
+        from (
+            select ct.emp_no,s.salary 
+            from (
+                select emp_no from ${dbSetting.view_current_titles} 
+                where title=? and to_date='9999-01-01'
+            ) ct 
+            left join ${dbSetting.view_current_salaries} s 
+            on ct.emp_no=s.emp_no order by s.salary desc
+        ) T
+    ) T2 
+    where emp_no=?;`
 
 let getEmpThreeRankingsByPeriod =
     `set @r=0;
     select T.ranking 
     from (
         select @r:=@r+1 as ranking, emp_no 
-        from ${dbSetting.table_current_dept_emp} where to_date='9999-01-01' 
-        order by from_date asc) T 
+        from ${dbSetting.table_current_dept_emp} 
+        where to_date='9999-01-01' 
+        order by from_date asc
+    ) T
     where T.emp_no=?;
-
+    
     set @r=0;
-    select T.ranking 
+    select ranking 
     from (
-        select @r:=@r+1 as ranking,ed.emp_no
-        from (select * from ${dbSetting.table_current_dept_emp} 
+        select @r:=@r+1 as ranking, emp_no 
+        from (
+            select emp_no from ${dbSetting.table_current_dept_emp} 
             where dept_no=(
                 select dept_no 
                 from ${dbSetting.table_departments} 
                 where dept_name=?
-                ) 
-                and to_date='9999-01-01'
-            order by from_date asc) ed 
-    ) T 
-    where T.emp_no=?;
+            ) 
+            and to_date='9999-01-01' 
+            order by from_date asc 
+        ) T
+    ) T2 
+    where emp_no=?;
 
     set @r=0;
-    select T.ranking 
+    select ranking 
     from (
-        select @r:=@r+1 as ranking,ct.emp_no 
-        from (select * from ${dbSetting.view_current_titles}
-            where title=? and to_date='9999-01-01' 
-            order by from_date asc) ct     
+        select @r:=@r+1 as ranking,emp_no from (
+            select de.emp_no 
+            from (
+                select emp_no from ${dbSetting.view_current_titles} 
+                where title=? and to_date='9999-01-01' 
+            ) ct 
+            left join ${dbSetting.table_current_dept_emp} de 
+            on ct.emp_no=de.emp_no 
+            order by de.from_date asc
+        ) T2
     ) T 
-    where T.emp_no=?;`
+    where emp_no=?;`
 
 let getDistributionOverDeptWhenSalaryIsAndAbove =
     `select d.dept_name,count(*) as cnt 
@@ -281,13 +297,3 @@ module.exports = {
     userFindById,
 
 }
-
-
-// set @r=0;
-// select @r:=@r+1 as ranking,emp_no,salary from (select ed.emp_no,ed.dept_no, s.salary 
-// from (select emp_no,dept_no from current_dept_emp where dept_no=
-//     (select dept_no from departments where dept_name='Sales') 
-//     and to_date='9999-01-01') ed 
-//     left join current_salaries s 
-//     on ed.emp_no=s.emp_no) T
-// order by T.salary desc limit 10;

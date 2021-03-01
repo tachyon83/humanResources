@@ -65,7 +65,6 @@ module.exports = (keyword) => {
                     console.log()
                     req.params.dept_name = qs.unescape(req.params.dept_name)
                     req.params.title = qs.unescape(req.params.title)
-                    // console.log(req.params.title)
                     dao.sqlHandler(sqls.getEmpThreeRankingsBySalary, [req.params.emp_no, req.params.dept_name, req.params.emp_no, req.params.title, req.params.emp_no])
                         .then(result => {
                             result = {
