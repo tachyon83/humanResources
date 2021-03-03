@@ -49,13 +49,17 @@ module.exports = (keyword) => {
                     console.log()
                     dao.sqlHandler(sqls.getEmpHistoryByEmpNo, [req.params.emp_no, req.params.emp_no])
                         .then(list => {
-                            list = list[0].concat(list[1])
-                            console.log('before', list)
-                            list.sort(function (a, b) {
+                            let result = []
+                            result.push(list[0].length)
+                            list[0].sort(function (a, b) {
                                 return (a.from_date > b.from_date) ? 1 : (a.from_date < b.from_date) ? -1 : (a.to_date > b.to_date) ? 1 : (a.to_date < b.to_date) ? -1 : 0
                             })
-                            console.log('after', list)
-                            res.status(200).json(resHandler(list))
+                            list[1].sort(function (a, b) {
+                                return (a.from_date > b.from_date) ? 1 : (a.from_date < b.from_date) ? -1 : (a.to_date > b.to_date) ? 1 : (a.to_date < b.to_date) ? -1 : 0
+                            })
+                            for (let e of list[0]) result.push(e)
+                            for (let e of list[1]) result.push(e)
+                            res.status(200).json(resHandler(result))
                         })
                         .catch(err => res.status(500).json(errHandler(err)))
                 },
