@@ -14,6 +14,40 @@ module.exports = (keyword) => {
     switch (keyword) {
         case 'emp':
             return {
+                getTotalEmpCount: (req, res) => {
+                    console.log('[empController]: Getting Total Employees Count...')
+                    console.log()
+                    dao.sqlHandler(sqls.getTotalEmpCount)
+                        .then(cnt => res.status(200).json(resHandler(cnt)))
+                        .catch(err => res.status(500).json(errHandler(err)))
+
+                },
+
+                getTotalEmpLeftCount: (req, res) => {
+                    console.log('[empController]: Getting Total Employees (Left) Count...')
+                    console.log()
+                    dao.sqlHandler(sqls.getTotalEmpLeftCount)
+                        .then(cnt => res.status(200).json(resHandler(cnt)))
+                        .catch(err => res.status(500).json(errHandler(err)))
+
+                },
+
+                getEmpCountByDept: (req, res) => {
+                    console.log('[empController]: Getting Total Employees Count By Dept...')
+                    console.log()
+                    dao.sqlHandler(sqls.getEmpCountByDept)
+                        .then(list => res.status(200).json(resHandler(list)))
+                        .catch(err => res.status(500).json(errHandler(err)))
+                },
+
+                getEmpCountByTitle: (req, res) => {
+                    console.log('[empController]: Getting Total Employees Count By Title...')
+                    console.log()
+                    dao.sqlHandler(sqls.getEmpCountByTitle)
+                        .then(list => res.status(200).json(resHandler(list)))
+                        .catch(err => res.status(500).json(errHandler(err)))
+                },
+
                 getEmpListByName: (req, res) => {
                     console.log('[empController]: Getting Employees List By Name...')
                     console.log()

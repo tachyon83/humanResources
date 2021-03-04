@@ -61,6 +61,26 @@ let create_views =
     create_view_current_salaries +
     create_view_current_titles
 
+let getTotalEmpCount =
+    `select count(*) as count from ${dbSetting.table_current_dept_emp};`
+
+let getTotalEmpLeftCount =
+    `select count(*) as count from ${dbSetting.table_dept_emp} 
+    where to_date<'9999-01-01';`
+
+let getEmpCountByDept =
+    `select d.dept_name,count(*) as count 
+    from ${dbSetting.table_current_dept_emp} cde 
+    left join ${dbSetting.table_departments} d 
+    on cde.dept_no=d.dept_no 
+    group by cde.dept_no;`
+
+let getEmpCountByTitle =
+    `select title, count(*) as count 
+    from ${dbSetting.table_titles} 
+    where to_date='9999-01-01' 
+    group by title;`
+
 let getEmpListByName =
     `select 
     T.emp_no, T.birth_date,T.first_name, T.last_name,T.gender,T.hire_date,
@@ -282,6 +302,10 @@ let userFindById =
 module.exports = {
     create_views,
     create_indexes,
+    getTotalEmpCount,
+    getTotalEmpLeftCount,
+    getEmpCountByDept,
+    getEmpCountByTitle,
     getEmpListByName,
     getEmpListByDept,
     getEmpListByTitle,
