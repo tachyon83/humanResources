@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const titleController = require('../../controllers/controller')('title')
+const sqlSetter = require('../../utils/sqlSetter')
+const controller = require('../../controllers/controller')
 // const httpAuth = require('../utils/httpAuth')
 
-router.get('/', titleController.getTitleNames)
+router.get('/', sqlSetter('getTitleNames'), controller)
 
 
 module.exports = router

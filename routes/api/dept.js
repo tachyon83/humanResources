@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const deptController = require('../../controllers/controller')('dept')
+const sqlSetter = require('../../utils/sqlSetter')
+const controller = require('../../controllers/controller')
 // const httpAuth = require('../utils/httpAuth')
 
-router.get('/', deptController.getDeptNames)
+router.get('/', sqlSetter('getDeptNames'), controller)
 
 
 module.exports = router
