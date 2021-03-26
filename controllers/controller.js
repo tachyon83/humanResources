@@ -17,7 +17,7 @@ module.exports = (req, res) => {
                     })
                     for (let e of list[0]) result.push(e)
                     for (let e of list[1]) result.push(e)
-
+                    list = result
                     break
 
                 case 'getEmpThreeRankingsBySalary':
@@ -39,6 +39,8 @@ module.exports = (req, res) => {
                 default:
                     break
             }
+            console.log('[Controller]: processed list', list)
+            console.log()
             res.status(200).json(resHandler(list))
         })
         .catch(err => res.status(500).json(errHandler(err)))

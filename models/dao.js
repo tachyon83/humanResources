@@ -23,8 +23,10 @@ class Dao {
 
                         console.log('[DAO]: A Query Processed...')
                         console.log()
-                        // console.log('db process result', rows)
-                        // console.log()
+                        console.log('[DAO]: SQL=', sql)
+                        console.log()
+                        console.log('[DAO]: Process Result=', rows)
+                        console.log()
                         resolve(rows)
                     })
                 })

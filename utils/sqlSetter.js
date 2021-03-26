@@ -4,10 +4,11 @@ const qs = require('querystring')
 const mysql = require('mysql');
 
 module.exports = option => {
-    console.log(`[Controller]: ${option}...`)
-    console.log()
 
     return (req, res, next) => {
+        console.log(`[Controller]: ${option}...`)
+        console.log()
+
         let q
         req.option = option
         req.sql = sqls[option]

@@ -321,3 +321,12 @@ module.exports = {
     userFindById,
 
 }
+
+
+// select de.emp_no, d.dept_name,de.from_date,
+//     case when year(de.to_date)<9998 then de.to_date else 'present' end as 'to_date' 
+//     from (select * from dept_emp where emp_no=10040) de 
+//     left join departments d on de.dept_no=d.dept_no;
+//     select emp_no,salary,from_date,
+//     case when year(to_date)<9998 then to_date else 'present' end as 'to_date' 
+//     from salaries where emp_no=10040;
